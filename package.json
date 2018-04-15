@@ -1,0 +1,26 @@
+{
+  "name": "js_project3",
+  "version": "1.0.0",
+  "description": "This project is an extension of project2, only this time we are implementing tests using mocha, chai, and instanbul frameworks.",
+  "main": "data_structures.js",
+  "scripts": {
+    "test_make_poem": "./node_modules/.bin/mocha -u tdd -R spec qa/tests_make_poem.js",
+    "test_data_structures": "./node_modules/.bin/mocha -u tdd -R spec qa/tests_data_structures.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kfilanowski/JS_project3.git"
+  },
+  "author": "Kevin Filanowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kfilanowski/JS_project3/issues"
+  },
+  "homepage": "https://github.com/kfilanowski/JS_project3#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.1.0",
+    "nyc": "^11.6.0"
+  }
+}

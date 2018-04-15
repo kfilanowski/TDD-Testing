@@ -1,0 +1,24 @@
+Authors - Kevin Filanowski & Caleb Tupone
+Version - 03/27/18
+
+Project: Project 2
+
+TABLE-OF-CONTENTS:
+------------------
+Description
+Contents
+How-To
+------------------
+
+DESCRIPTION:
+This program will read a text file, and generate a poem from it. It does this by detecting patterns in the text file, based on probability. It will then format this into a form similar to that of a poem, including an amount of stanzas, an amount of lines per stanza, and an amount of words per line. These fields are specified by the user.
+
+CONTENTS:
+make_poem.js: A program that reads a text file and generates a poem from it from given input.
+data_structures.js: Contains required methods and functions to run make_poem.js.
+
+HOW-TO:
+
+Usage: nodejs make_poem.js
+or
+node make_poem.js
