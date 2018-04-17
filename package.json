@@ -5,8 +5,20 @@
   "main": "data_structures.js",
   "scripts": {
     "test_make_poem": "./node_modules/.bin/mocha -u tdd -R spec qa/tests_make_poem.js",
-    "test_data_structures": "./node_modules/.bin/mocha -u tdd -R spec qa/tests_data_structures.js"
+    "test_data_structures": "./node_modules/.bin/mocha -u tdd -R spec qa/tests_data_structures.js",
+    "coverage_make_poem": "nyc --reporter=html mocha ./node_modules/.bin/mocha -u tdd -R spec qa/tests_make_poem.js",
+    "coverage_data_structures": "nyc --reporter=html mocha ./node_modules/.bin/mocha -u tdd -R spec qa/tests_data_structures.js",
+    "publish": "cp -R coverage ~/public_html/coverage; chmod -R 777 ~/public_html/coverage"
   },
+  "keywords": [
+    "mocha",
+    "unit",
+    "test",
+    "data",
+    "structures",
+    "make",
+    "poem"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kfilanowski/JS_project3.git"

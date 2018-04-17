@@ -7,7 +7,7 @@
  * words appear often and after what other word,which in turn can be compared
  * to traditional language to determine text.
  * @author Kevin Filanowski
- * @version 03/16/18
+ * @version 04/16/18
  **/
 
  var exports = module.exports = {};
@@ -25,21 +25,28 @@
  * string.
  **/
 function wordCount(data) {
-  /** wordCount object will count how many words appear in the data.**/
-  var _wordCount = {};
+  //Remove any odd delimiters before processing.
+  data = removeNonAlpha(data);
 
-  /** Create an array with all of the words split by escape characters. **/
-  var wordArray = data.split(" ");
+  if (data.length > 0) {
+    /** wordCount object will count how many words appear in the data.**/
+    var _wordCount = {};
 
-  for (var index in wordArray) {
-    //Does the word exist in the array? Create a property and set to 1,
-    //else increment the value by 1.
-    if (_wordCount[wordArray[index]] == undefined)
-      _wordCount[wordArray[index]] = 1;
-    else
-      _wordCount[wordArray[index]]++;
+    /** Create an array with all of the words split by escape characters. **/
+    var wordArray = data.split(" ");
+
+    for (var index in wordArray) {
+      //Does the word exist in the array? Create a property and set to 1,
+      //else increment the value by 1.
+      if (_wordCount[wordArray[index]] == undefined)
+        _wordCount[wordArray[index]] = 1;
+      else
+        _wordCount[wordArray[index]]++;
+    }
+    return _wordCount;
+  } else {
+    return "Input is empty";
   }
-  return _wordCount;
 } //END WORDCOUNT
 
 /**
@@ -50,23 +57,30 @@ function wordCount(data) {
  * they occur.
  **/
 function wordFreq(data) {
-  /** The wordFreq object, to store all of the frequency information. **/
-  var _wordFreq = {};
+  //Remove any odd delimiters before processing.
+  data = removeNonAlpha(data);
 
-  /** The total amount of words in the variable data. **/
-  var totalWordCount = data.split(" ").length;
+  if (data.length > 0) {
+    /** The wordFreq object, to store all of the frequency information. **/
+    var _wordFreq = {};
 
-  /** Object containing all of the word occurences in the string. **/
-  var _wordCount = wordCount(data);
+    /** The total amount of words in the variable data. **/
+    var totalWordCount = data.split(" ").length;
 
-  /** Retrieve all of the keys from the object. **/
-  var keys = Object.keys(_wordCount);
+    /** Object containing all of the word occurences in the string. **/
+    var _wordCount = wordCount(data);
 
-  //Computation for word frequencies.
-  for (var index = 0; index < keys.length; index++)
-    _wordFreq[keys[index]] = _wordCount[keys[index]] / totalWordCount;
+    /** Retrieve all of the keys from the object. **/
+    var keys = Object.keys(_wordCount);
 
-  return _wordFreq;
+    //Computation for word frequencies.
+    for (var index = 0; index < keys.length; index++)
+      _wordFreq[keys[index]] = _wordCount[keys[index]] / totalWordCount;
+
+    return _wordFreq;
+  } else {
+    return "Input is empty";
+  }
 } //END WORDFREQ
 
 /**
@@ -79,42 +93,49 @@ function wordFreq(data) {
  * I.E: {Blue : {Red: 1, Green: 2}, Red: {Green: 1, Red: 2, Blue: 1}, etc: {}}
  **/
 function condWordCount(data) {
-  /** The wordFreq object, to store all of the word count information. **/
-  var _condWordCount = {};
+  //Remove any odd delimiters before processing.
+  data = removeNonAlpha(data);
 
-  /** Create an array with all of the words split by escape characters. **/
-  var wordArray = data.split(' ');
+  if (data.length > 0) {
+    /** The wordFreq object, to store all of the word count information. **/
+    var _condWordCount = {};
 
-  /** The last element's index in the wordArray. This is used in Case 2. **/
-  var lastIndex = wordArray.length-1;
+    /** Create an array with all of the words split by escape characters. **/
+    var wordArray = data.split(' ');
 
-  //Begin by traversing through every word in wordArray (data).
-  for (var index = 0; index < wordArray.length; index++) {
-    //If the word is not in the array, initialize the key word with
-    //an empty object.
-    if (_condWordCount[wordArray[index]] == undefined) {
-      _condWordCount[wordArray[index]] = {};
+    /** The last element's index in the wordArray. This is used in Case 2. **/
+    var lastIndex = wordArray.length-1;
+
+    //Begin by traversing through every word in wordArray (data).
+    for (var index = 0; index < wordArray.length; index++) {
+      //If the word is not in the array, initialize the key word with
+      //an empty object.
+      if (_condWordCount[wordArray[index]] == undefined) {
+        _condWordCount[wordArray[index]] = {};
+      }
+
+      //CASE 1: Neighboring Elements
+      //Traverse through the array and add the current element to the previous
+      //entry, initializing it as needed.
+      if (index > 0) {
+        if (_condWordCount[wordArray[index-1]][wordArray[index]] == undefined)
+          _condWordCount[wordArray[index-1]][wordArray[index]] = 1;
+        else
+          _condWordCount[wordArray[index-1]][wordArray[index]]++;
+      }
     }
 
-    //CASE 1: Neighboring Elements
-    //Traverse through the array and add the current element to the previous
-    //entry, initializing it as needed.
-    if (index > 0) {
-      if (_condWordCount[wordArray[index-1]][wordArray[index]] == undefined)
-        _condWordCount[wordArray[index-1]][wordArray[index]] = 1;
+    //CASE 2: First-and-Last
+    //Consider the case where the first element follows the last element.
+      if (_condWordCount[wordArray[lastIndex]][wordArray[0]] == undefined)
+        _condWordCount[wordArray[lastIndex]][wordArray[0]] = 1;
       else
-        _condWordCount[wordArray[index-1]][wordArray[index]]++;
-    }
+        _condWordCount[wordArray[lastIndex]][wordArray[0]]++;
+
+    return _condWordCount;
+  } else {
+    return "Input is empty";
   }
-
-  //CASE 2: First-and-Last
-  //Consider the case where the first element follows the last element.
-    if (_condWordCount[wordArray[lastIndex]][wordArray[0]] == undefined)
-      _condWordCount[wordArray[lastIndex]][wordArray[0]] = 1;
-    else
-      _condWordCount[wordArray[lastIndex]][wordArray[0]]++;
-
-  return _condWordCount;
 } //END CONDWORDCOUNT
 
 /**
@@ -126,36 +147,62 @@ function condWordCount(data) {
  * proceeding words frequency by storing another object in the value pairs.
  **/
 function condWordFreq(data) {
-  /** Keeps temporary track of the number of words in the inner object **/
-  var wordCounter = 0.0;
+  //Remove any odd delimiters before processing.
+  data = removeNonAlpha(data);
 
-  /** An array of all of the unique words in data. **/
-  var keys = Object.keys(wordCount(data));
+  if (data.length > 0) {
+    /** Keeps temporary track of the number of words in the inner object **/
+    var wordCounter = 0.0;
 
-  /** This object contains keys with unique words, and values consisting of
-  * an object with key-value pairs that determine what word and how many words
-  * are after the original key word **/
-  var _condWordFreq = condWordCount(data);
+    /** An array of all of the unique words in data. **/
+    var keys = Object.keys(wordCount(data));
 
-  /** An array of all of the unique words in _condWordCount's values. **/
-  var tempKeys;
+    /** This object contains keys with unique words, and values consisting of
+    * an object with key-value pairs that determine what word and how many words
+    * are after the original key word **/
+    var _condWordFreq = condWordCount(data);
 
-  //Run through each KEY in _condWordCount to get a VALUE.
-  for (var i = 0; i < keys.length; i++) {
-    tempKeys = Object.keys(_condWordFreq[keys[i]]);
-    //Traverse through keys of the value object and get inner values.
-    for (var j = 0; j < tempKeys.length; j++) {
-      //Add up the total words in this one key.
-      wordCounter += _condWordFreq[keys[i]][tempKeys[j]];
+    /** An array of all of the unique words in _condWordCount's values. **/
+    var tempKeys;
+
+    //Run through each KEY in _condWordCount to get a VALUE.
+    for (var i = 0; i < keys.length; i++) {
+      tempKeys = Object.keys(_condWordFreq[keys[i]]);
+      //Traverse through keys of the value object and get inner values.
+      for (var j = 0; j < tempKeys.length; j++) {
+        //Add up the total words in this one key.
+        wordCounter += _condWordFreq[keys[i]][tempKeys[j]];
+      }
+
+      //Repeat the iteration, this time modifying the frequency.
+      for (var k = 0; k < tempKeys.length; k++) {
+        _condWordFreq[keys[i]][tempKeys[k]] = _condWordFreq[keys[i]][tempKeys[k]]
+        / wordCounter;
+      }
+      //Reset the word counter to count a new pair of values.
+      wordCounter = 0.0;
     }
-
-    //Repeat the iteration, this time modifying the frequency.
-    for (var k = 0; k < tempKeys.length; k++) {
-      _condWordFreq[keys[i]][tempKeys[k]] = _condWordFreq[keys[i]][tempKeys[k]]
-      / wordCounter;
-    }
-    //Reset the word counter to count a new pair of values.
-    wordCounter = 0.0;
+    return _condWordFreq;
+  } else {
+    return "Input is empty";
   }
-  return _condWordFreq;
 }
+
+/**
+ * Removes all characters except letters and whitespace.
+ * Effectively results in each word separated by a single whitespace.
+ * @param {String} data - String containing all of the words in a file.
+ * @return {String} - data except without any extra punctuation, numbers, or
+ * escape characters. Only words separated by a single whitespace.
+ **/
+ function removeNonAlpha(data) {
+   //Defining regex
+   var non_word_character = /([^a-zA-z]|-|\s|\t|\n|\r|\f|\[|\]|\0)+/g;
+   var extra_space = /\s+/g;
+
+   //replacing what does not belong.
+   data = data.replace(non_word_character, " ");
+   data = data.replace(extra_space, " ");
+
+   return data;
+ }
