@@ -7,7 +7,7 @@
  * words appear often and after what other word,which in turn can be compared
  * to traditional language to determine text.
  * @author Kevin Filanowski
- * @version 04/16/18
+ * @version 04/17/18
  **/
 
  var exports = module.exports = {};
@@ -15,6 +15,7 @@
  exports.wordFreq = wordFreq;
  exports.condWordCount = condWordCount;
  exports.condWordFreq = condWordFreq;
+ exports.removeNonAlpha = removeNonAlpha;
 
 /**
  * This function counts the number of occurences of a word in a given string.
@@ -196,13 +197,12 @@ function condWordFreq(data) {
  * escape characters. Only words separated by a single whitespace.
  **/
  function removeNonAlpha(data) {
-   //Defining regex
-   var non_word_character = /([^a-zA-z]|-|\s|\t|\n|\r|\f|\[|\]|\0)+/g;
-   var extra_space = /\s+/g;
+     //Defining regex
+     var non_word_character = /([^a-zA-z]|\s|\[|\])+/g;
+     var extra_space = /\s+/g;
 
-   //replacing what does not belong.
-   data = data.replace(non_word_character, " ");
-   data = data.replace(extra_space, " ");
-
-   return data;
+     //replacing what does not belong.
+     data = data.replace(non_word_character, " ");
+     data = data.replace(extra_space, " ");
+     return data;
  }

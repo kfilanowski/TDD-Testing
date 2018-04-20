@@ -2,7 +2,7 @@
  * makePoem.js creates a poem based on input parameters and a file containing
  * lots of words.
  * @author Kevin Filanowski, Caleb Tupone
- * @version 04/15/2018
+ * @version 04/17/2018
 **/
 
 //Import file reading and the data_structure algorithms
@@ -16,28 +16,6 @@ exports.findProbability = findProbability;
 exports.makePoem = makePoem;
 exports.pickFirstWord = pickFirstWord;
 exports.pickNextWord = pickNextWord;
-exports.removeDelimiters = removeDelimiters;
-
-/**
- * Main function. Calls all of the methods.
- * @param {String} file - The name of the textfile in the local directory.
- * @param {Number} stanzas - How many stanzas in the poem.
- * @param {Number} lines - How many lines per stanza in the poem.
- * @param {Number} words - How many words per line.
- * @param {Object} array_prob - Array of probabilities. The number of elements
- * in this array is equal to the number of words expected to be printed.
- * @param {Boolean} display - Whether or not to display extra diagnostic data.
-**/
-function main(file, stanzas, lines, words, array_prob, display) {
-  //Read the file
-  var data = fs.readFileSync(file, "utf-8").trim();
-
-    //Display data
-    if (display)
-      displayDiagnostics(data);
-
-    console.log(makePoem(data, array_prob, stanzas, lines, words));
-}
 
 /**
  * A function that displays diagnostic and verbose information about the
@@ -101,33 +79,37 @@ function findCondProbability(data) {
   var condWordFrequency = data_structure.condWordFreq(data);
   var sum = 0;
 
-  Object.keys(condWordFrequency).sort().forEach(function(key) {
-    //Sort all the keys (not values), and assign it to a new object.
-    ordered[key] = condWordFrequency[key];
+  if (condWordFrequency === "Input is empty") {
+    return condWordFrequency;
+  } else {
+    Object.keys(condWordFrequency).sort().forEach(function(key) {
+      //Sort all the keys (not values), and assign it to a new object.
+      ordered[key] = condWordFrequency[key];
 
-    //Store the value's keys and sort the keys alphabetically.
-    key_array = Object.keys(condWordFrequency[key]).sort();
+      //Store the value's keys and sort the keys alphabetically.
+      key_array = Object.keys(condWordFrequency[key]).sort();
 
-    //Create a new sorted value-key object.
-    for (var i in key_array) {
-      value_object[key_array[i]] = ordered[key][key_array[i]];
-    }
+      //Create a new sorted value-key object.
+      for (var i in key_array) {
+        value_object[key_array[i]] = ordered[key][key_array[i]];
+      }
 
-    //Assign the ordered values to the proper location.
-    ordered[key] = value_object;
+      //Assign the ordered values to the proper location.
+      ordered[key] = value_object;
 
-    //Assign all of the probabilities for the current value.
-    for (var i in key_array) {
-      sum += ordered[key][key_array[i]];
-      ordered[key][key_array[i]] = sum;
-    }
+      //Assign all of the probabilities for the current value.
+      for (var i in key_array) {
+        sum += ordered[key][key_array[i]];
+        ordered[key][key_array[i]] = sum;
+      }
 
-    //Reset for the next iteration.
-    key_array = [];
-    value_object = {};
-    sum = 0;
-  });
-  return ordered;
+      //Reset for the next iteration.
+      key_array = [];
+      value_object = {};
+      sum = 0;
+    });
+    return ordered;
+  }
 }
 
 /**
@@ -139,22 +121,25 @@ function findCondProbability(data) {
  **/
 function findProbability(data) {
   var _key;
-  var wordFrequency
   var ordered = {};
   var sum = 0;
+  var wordFrequency = data_structure.wordFreq(data);
 
-  //Sort the object
-  wordFrequency = data_structure.wordFreq(data);
-  Object.keys(wordFrequency).sort().forEach(function(key) {
-    ordered[key] = wordFrequency[key];
-  });
+  if (wordFrequency === "Input is empty") {
+    return wordFrequency;
+  } else {
+    //Sort the object
+    Object.keys(wordFrequency).sort().forEach(function(key) {
+      ordered[key] = wordFrequency[key];
+    });
 
-  //Create a probability array for the words.
-  for (_key in ordered) {
-    sum += ordered[_key];
-    ordered[_key] = sum;
+    //Create a probability array for the words.
+    for (_key in ordered) {
+      sum += ordered[_key];
+      ordered[_key] = sum;
+    }
+    return ordered;
   }
-  return ordered;
 }
 
 /**
@@ -175,24 +160,28 @@ function makePoem(data, array_prob, stanzas, lines, words) {
   var wordCount = 0;
   var tmp_len = 1;
 
-  for (var i = 0; i < stanzas; i++) {
-    for (var j = 0; j < lines; j++) {
-      for (var k = tmp_len; k < words; k++) {
-        wordCount++;
-        nextWord = pickNextWord(data, array_prob[wordCount], lastWord);
-        poem += nextWord + " ";
-        lastWord = nextWord;
+  if (lastWord === "Input is empty") {
+    return lastWord;
+  } else {
+    for (var i = 0; i < stanzas; i++) {
+      for (var j = 0; j < lines; j++) {
+        for (var k = tmp_len; k < words; k++) {
+          wordCount++;
+          nextWord = pickNextWord(data, array_prob[wordCount], lastWord);
+          poem += nextWord + " ";
+          lastWord = nextWord;
+        }
+        tmp_len = 0; // Sets length of array back to 0 for the next line.
+        //Add spaces if there are additional lines.
+        if (j < lines-1)
+          poem += "\n";
       }
-      tmp_len = 0; // Sets length of array back to 0 for the next line.
       //Add spaces if there are additional lines.
-      if (j < lines-1)
-        poem += "\n";
+      if (i < stanzas-1)
+        poem += "\n\n";
     }
-    //Add spaces if there are additional lines.
-    if (i < stanzas-1)
-      poem += "\n\n";
+    return poem;
   }
-  return poem;
 }
 
 /**
@@ -206,10 +195,13 @@ function makePoem(data, array_prob, stanzas, lines, words) {
 function pickFirstWord(data, prob) {
   var key;
   var probability = findProbability(data);
-
-  for (key in probability) {
-    if (prob <= probability[key]) {
-      return key;
+  if (probability === "Input is empty") {
+    return probability;
+  } else {
+    for (key in probability) {
+      if (prob <= probability[key]) {
+        return key;
+      }
     }
   }
 }
@@ -227,13 +219,13 @@ function pickNextWord(data, prob, previousWord) {
   var key;
 	var probability = findCondProbability(data);
 
-  for (key in probability[previousWord]) {
-    if (prob <= probability[previousWord][key]) {
-      return key;
+  if (probability === "Input is empty") {
+    return probability;
+  } else {
+    for (key in probability[previousWord]) {
+      if (prob <= probability[previousWord][key]) {
+        return key;
+      }
     }
   }
-}
-
-if (require.main === module) {
-  main('rbrbb_input_text.txt',1,2,3,[0.6,0.2,0.8,0.9,0.4,0.4],false);
 }
