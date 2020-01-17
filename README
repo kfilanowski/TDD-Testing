@@ -1,24 +1,25 @@
-Authors - Kevin Filanowski & Caleb Tupone
-Version - 04/20/18
+# Authors
+Kevin Filanowski
+Caleb Tupone
 
-Project: Project 3
+# Version
+04/20/18
 
-TABLE-OF-CONTENTS:
-------------------
-Description
-Contents
-How-To Run Tests
-How-To Run Coverage
-------------------
+# Project: Project 3
 
-DESCRIPTION:
-------------------
+# Table of Contents
+* [Description](#description)
+* [Contents](#contents)
+* [How-To Run Tests](#how-to-run-tests)
+* [How-To Run Coverage](#how-to-run-coverage)
+
+
+# Description
 This program uses Test Driven Development to test two files: make_poem.js and
 data_structures.js. We use unit testing with various data inputs to test
 every function. There should be 100% code coverage.
 
-CONTENTS:
-------------------
+# Contents
 - make_poem.js: A program that reads a text file and generates a poem from it
   from given input
 
@@ -31,18 +32,16 @@ CONTENTS:
 - tests_data_structures.js: A file containing the unit tests for all of the
   functions that calls data_structures to ensure that they function as intended.
 
-HOW-TO Run Tests:
-------------------
+#  HOW-TO Run Tests
 To run the test for the data_structures.js file, run the following command:
-npm run test_data_structures
+```npm run test_data_structures```
 
 To run the test for the make_poem.js file, run the following command:
-npm run test_make_poem
+```npm run test_make_poem```
 
-HOW-TO Run Coverage:
-------------------
+# HOW-TO Run Coverage
 To run the coverage for the data_structures.js file, run the following command:
-npm run coverage_data_structures
+```npm run coverage_data_structures```
 
 To run the coverage for the make_poem.js file, run the following command:
-npm run coverage_make_poem
+```npm run coverage_make_poem```
